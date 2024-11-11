@@ -107,6 +107,33 @@ def quick_start():
         test(test_dataloader, model_, loss_fn_)
     print("Done!")
 
+    torch.save(model_.state_dict(), "model.pth")
+    print("Saved PyTorch Model State to model.pth")
+
+    model_2 = NeuralNetwork().to(device)
+    model_2.load_state_dict(torch.load("model.pth", weights_only=True))
+
+    classes = [
+        "T-shirt/top",
+        "Trouser",
+        "Pullover",
+        "Dress",
+        "Coat",
+        "Sandal",
+        "Shirt",
+        "Sneaker",
+        "Bag",
+        "Ankle boot",
+    ]
+
+    model_2.eval()
+    x, y = test_data[0][0], test_data[0][1]
+    with torch.no_grad():
+        x = x.to(device)
+        pred = model_2(x)
+        predicted, actual = classes[pred[0].argmax(0)], classes[y]
+        print(f'Predicted: "{predicted}", Actual: "{actual}"')
+
 
 if __name__ == "__main__":
     quick_start()
